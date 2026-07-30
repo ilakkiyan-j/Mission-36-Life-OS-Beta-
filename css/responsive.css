@@ -1,0 +1,45 @@
+@media (max-width: 1024px) {
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .milestones-track { grid-template-columns: repeat(2, 1fr); }
+  .events-track { grid-template-columns: repeat(2, 1fr); }
+  .final-grid { grid-template-columns: 1fr; }
+  .dashboard-grid { grid-template-columns: 1fr; }
+  .fitness-hero { flex-direction: column; gap: 24px; }
+  .fitness-goals ul { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .nav-links {
+    position: fixed; top: 64px; left: 0; right: 0; bottom: 0; background: rgba(9,9,11,0.98);
+    flex-direction: column; justify-content: flex-start; padding: 40px 24px; gap: 24px;
+    transform: translateX(100%); transition: var(--transition); backdrop-filter: blur(16px);
+  }
+  .nav-links.open { transform: translateX(0); }
+  .nav-links a { font-size: 1.25rem; }
+  .nav-toggle { display: flex; }
+  .dot-nav { display: none; }
+  .section { padding: 60px 0; }
+  .grid-2, .grid-4 { grid-template-columns: 1fr; }
+  .countdown-timer { gap: 16px; }
+  .countdown-value { font-size: 1.75rem; }
+  .roadmap-horizontal { flex-direction: column; align-items: stretch; }
+  .roadmap-node { min-width: auto; }
+  .milestones-track { grid-template-columns: 1fr; }
+  .events-track { grid-template-columns: 1fr; }
+  .hero-actions { flex-direction: column; align-items: stretch; }
+  .hero-tags { justify-content: center; }
+}
+
+@media (max-width: 480px) {
+  .container { padding: 0 16px; }
+  .section-title { font-size: 1.75rem; }
+  .card { padding: 20px; }
+  .stat-value { font-size: 2.25rem; }
+  .countdown-value { font-size: 1.5rem; }
+  .fitness-value { font-size: 3rem; }
+  .quote-card blockquote { font-size: 1.1rem; }
+}
+
+@media (max-width: 520px) {
+  .notes-panel { width: 100%; }
+}
