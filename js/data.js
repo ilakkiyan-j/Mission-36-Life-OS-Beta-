@@ -73,7 +73,10 @@
       if (!res.ok) { const t = await res.text(); throw new Error(t); }
       const json = await res.json();
       const decoded = decodeURIComponent(escape(atob(json.content)));
-      return JSON.parse(decoded);
+      const parsed = JSON.parse(decoded);
+      if (!parsed.meta) parsed.meta = {};
+      parsed.meta.sha = json.sha;
+      return parsed;
     } catch (e) {
       if (window.showToast) window.showToast('Fetch failed: ' + e.message, 'error');
       return null;
