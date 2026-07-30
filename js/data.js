@@ -219,4 +219,6 @@
     progress: data.progress,
     todos: data.todos
   };
+
+  MissionData.init();
 })();

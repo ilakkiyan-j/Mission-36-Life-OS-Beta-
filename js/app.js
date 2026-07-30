@@ -156,8 +156,8 @@
   // Todo
   function renderTodos() {
     const todos = [];
-    if (typeof window.MissionData !== 'undefined' && window.MissionData.todos) {
-      const dayTodos = window.MissionData.todos[currentDay];
+    if (typeof window.MissionData !== 'undefined') {
+      const dayTodos = window.MissionData.getTodos(currentDay);
       if (dayTodos) todos.push(...dayTodos);
     }
     todoList.innerHTML = '';
