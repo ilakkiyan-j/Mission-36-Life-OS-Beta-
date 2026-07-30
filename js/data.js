@@ -87,13 +87,14 @@
         },
         body: JSON.stringify({
           message: `Update progress ${new Date().toISOString()}`,
-          content: btoa(JSON.stringify(data, null, 2)),
+          content: btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2)))),
           sha: data.meta.sha || undefined
         })
       });
-      if (!res.ok) throw new Error('GitHub API error');
+      if (!res.ok) { const errText = await res.text(); throw new Error(errText); }
       const result = await res.json();
       data.meta.sha = result.content.sha;
+      saveToStorage();
       if (window.MissionUI) window.MissionUI.setSyncStatus('Synced');
       return true;
     } catch (e) {
