@@ -83,7 +83,7 @@
     }
   }
 
-  async function pushToGitHub() {
+  async function pushToGitHub(retried) {
     const token = localStorage.getItem('gh_token');
     const repo = localStorage.getItem('gh_repo');
     if (!token || !repo) return false;
@@ -102,6 +102,17 @@
         },
         body
       });
+      if (res.status === 422 && !retried) {
+        const shaRes = await fetch(`https://api.github.com/repos/${repo}/contents/progress.json`, {
+          headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
+        });
+        if (shaRes.ok) {
+          const shaJson = await shaRes.json();
+          data.meta.sha = shaJson.sha;
+          saveToStorage();
+          return pushToGitHub(true);
+        }
+      }
       if (!res.ok) { const t = await res.text(); throw new Error(t); }
       const result = await res.json();
       data.meta.sha = result.content.sha;
@@ -119,6 +130,10 @@
 
   async function init() {
     loadFromStorage();
+    if (window.MissionUI) {
+      window.MissionUI.renderChecklist();
+      window.MissionUI.renderTodos();
+    }
     const remote = await fetchFromGitHub();
     if (remote) {
       data = remote;

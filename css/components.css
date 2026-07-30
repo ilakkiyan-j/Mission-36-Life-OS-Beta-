@@ -144,6 +144,11 @@
 /* Dashboard */
 .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 32px; }
 
+.day-nav { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+.day-nav-center { flex: 1; text-align: center; }
+.day-nav-label { display: block; font-size: 0.85rem; color: var(--muted); font-weight: 500; }
+.day-nav-title { display: block; font-size: 1.1rem; font-weight: 600; color: var(--text); margin-top: 4px; }
+
 /* Todo */
 .todo-form { display: flex; gap: 12px; margin-bottom: 20px; }
 .todo-form input {
