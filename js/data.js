@@ -87,7 +87,7 @@
         },
         body: JSON.stringify({
           message: `Update progress ${new Date().toISOString()}`,
-          content: Buffer.from(JSON.stringify(data, null, 2)).toString('base64'),
+          content: btoa(JSON.stringify(data, null, 2)),
           sha: data.meta.sha || undefined
         })
       });
