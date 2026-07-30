@@ -66,12 +66,18 @@
     const repo = localStorage.getItem('gh_repo');
     if (!token || !repo) return null;
     try {
-      const res = await fetch(`https://raw.githubusercontent.com/${repo}/main/progress.json`, {
-        headers: token ? { Authorization: `token ${token}` } : {}
+      const res = await fetch(`https://api.github.com/repos/${repo}/contents/progress.json`, {
+        headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
       });
-      if (!res.ok) return null;
-      return await res.json();
-    } catch (e) { return null; }
+      if (res.status === 404) return null;
+      if (!res.ok) { const t = await res.text(); throw new Error(t); }
+      const json = await res.json();
+      const decoded = decodeURIComponent(escape(atob(json.content)));
+      return JSON.parse(decoded);
+    } catch (e) {
+      if (window.showToast) window.showToast('Fetch failed: ' + e.message, 'error');
+      return null;
+    }
   }
 
   async function pushToGitHub() {
@@ -79,27 +85,31 @@
     const repo = localStorage.getItem('gh_repo');
     if (!token || !repo) return false;
     try {
+      const body = JSON.stringify({
+        message: `Update progress ${new Date().toISOString()}`,
+        content: btoa(unescape(encodeURIComponent(JSON.stringify(data)))),
+        sha: data.meta.sha || undefined
+      });
       const res = await fetch(`https://api.github.com/repos/${repo}/contents/progress.json`, {
         method: 'PUT',
         headers: {
           Authorization: `token ${token}`,
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          Accept: 'application/vnd.github.v3+json'
         },
-        body: JSON.stringify({
-          message: `Update progress ${new Date().toISOString()}`,
-          content: btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2)))),
-          sha: data.meta.sha || undefined
-        })
+        body
       });
-      if (!res.ok) { const errText = await res.text(); throw new Error(errText); }
+      if (!res.ok) { const t = await res.text(); throw new Error(t); }
       const result = await res.json();
       data.meta.sha = result.content.sha;
       saveToStorage();
       if (window.MissionUI) window.MissionUI.setSyncStatus('Synced');
+      if (window.showToast) window.showToast('Synced to GitHub', 'success');
       return true;
     } catch (e) {
       console.warn('Sync failed', e);
       if (window.MissionUI) window.MissionUI.setSyncStatus('Offline');
+      if (window.showToast) window.showToast('Sync error: ' + e.message, 'error');
       return false;
     }
   }
